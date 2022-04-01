@@ -38,12 +38,13 @@ public class PdfReduce implements Reducer {
 
             insertingChangesToCounters(counters.get(key), srcSizeKiloBytes, destSizeKiloBytes);
 
-        System.out.printf("Файл %s был ужат с %f KB до %f KB\n", fileSrc.getName(), srcSizeKiloBytes,
-                destSizeKiloBytes);
+            ConsoleHelper.writeMessage(String.format("Файл %s был ужат с %f KB до %f KB\n", fileSrc.getName(), srcSizeKiloBytes,
+                    destSizeKiloBytes));
 
             file.renameTo(fileSrc);
+
         } catch (Exception e) {
-            e.printStackTrace(); // писать ошибку в лог
+            ConsoleHelper.writeMessage(String.format("При обработке файла %s произошла ошибка %s", file.getName(), e.getMessage()));
         }
     }
 
@@ -80,7 +81,7 @@ public class PdfReduce implements Reducer {
             if (bi == null)
                 continue;
 //            изменить коэфицент
-            if (bi.getWidth() <= 1264) {
+            if (bi.getWidth() <= WIDTH && bi.getHeight() <= HEIGHT) {
                 continue;
             }
             Double factor =  1264 / (double) bi.getWidth();
