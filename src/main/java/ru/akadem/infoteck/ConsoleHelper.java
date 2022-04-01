@@ -3,6 +3,8 @@ package ru.akadem.infoteck;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class ConsoleHelper {
@@ -11,7 +13,7 @@ public class ConsoleHelper {
 //    private static ResourceBundle res = ResourceBundle.getBundle(/*CashMachine.class.getPackage().getName() + ".resources.common"*/"common");
 
     public static void writeMessage(String message) {
-        System.out.println(message);
+        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) + " " + message);
     }
 
 //    public static String readString() throws InterruptOperationException {

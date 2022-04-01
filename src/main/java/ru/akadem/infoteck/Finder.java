@@ -27,7 +27,8 @@ public class Finder extends SimpleFileVisitor<Path> {
     }
 
     private static void reducerMapInit() {
-        reducerMap.put(".pdf", new PdfReduce());
+        reducerMap.put(".pdf", new PdfReduce(1264, 1753));
+        reducerMap.put(".png", new PngReducer());
 //        ".png", ".gif", ".jpeg", ".jpg", ".tiff"
     }
 
@@ -38,7 +39,7 @@ public class Finder extends SimpleFileVisitor<Path> {
         for (Map.Entry<String, Reducer> entry : reducerMap.entrySet()) {
             if (name != null && name.toString().endsWith(entry.getKey())) {
                 Reducer reducer = entry.getValue();
-                reducer.reduce(file, counters, entry.getKey());
+                reducer.reduce(file, counters, entry.getKey(), reducer);
             }
         }
     }
@@ -47,8 +48,8 @@ public class Finder extends SimpleFileVisitor<Path> {
     // matches to standard out.
     public void done() {
         for (Map.Entry<String, Counter> counter : counters.entrySet()) {
-            System.out.printf("Всего обработано %d файлов формата %s, из которых сжато - %d, увеличено - %d, " +
-                            "пропущено - %d. Общий размер файлов до обработки -" + " %s KB, после обработки - %s KB",
+            ConsoleHelper.writeMessage(String.format("Всего обработано %d файлов формата %s, из которых сжато - %d, " +
+                            "увеличено - %d, пропущено - %d. Общий размер файлов до обработки -" + " %s KB, после обработки - %s KB",
                     counter.getValue().getTotalFiles(),
                     counter.getValue().getName(),
                     counter.getValue().getQuantityOfProcessedFiles(),
@@ -56,7 +57,7 @@ public class Finder extends SimpleFileVisitor<Path> {
                     counter.getValue().getQuantityOfUnmodifiedFiles(),
                     counter.getValue().getTotalSizeBeforeModifier(),
                     counter.getValue().getTotalSizeAfterModifier()
-                   );
+                   ));
         }
     }
 
