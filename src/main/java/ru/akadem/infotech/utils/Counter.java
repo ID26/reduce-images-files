@@ -1,23 +1,21 @@
-package ru.akadem.infoteck;
+package ru.akadem.infotech.utils;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 public class Counter {
     private String name;
     private Long totalFiles;
     private Long quantityOfProcessedFiles;
     private Long quantityOfUnmodifiedFiles;
-    private Long quantityOfUnmodifiedFilesToSmall;
-    private Long quantityIncreasedFiles;
     private BigDecimal totalSizeBeforeModifier;
     private BigDecimal totalSizeAfterModifier;
 
-    public Counter(String name, Long totalFiles, Long quantityOfProcessedFiles, Long quantityOfUnmodifiedFiles, Long quantityIncreasedFiles, BigDecimal totalSizeBeforeModifier, BigDecimal totalSizeAfterModifier) {
+    public Counter(String name, Long totalFiles, Long quantityOfProcessedFiles, Long quantityOfUnmodifiedFiles, BigDecimal totalSizeBeforeModifier, BigDecimal totalSizeAfterModifier) {
         this.name = name;
         this.totalFiles = totalFiles;
         this.quantityOfProcessedFiles = quantityOfProcessedFiles;
         this.quantityOfUnmodifiedFiles = quantityOfUnmodifiedFiles;
-        this.quantityIncreasedFiles = quantityIncreasedFiles;
         this.totalSizeBeforeModifier = totalSizeBeforeModifier;
         this.totalSizeAfterModifier = totalSizeAfterModifier;
     }
@@ -34,16 +32,24 @@ public class Counter {
         quantityOfUnmodifiedFiles++;
     }
 
-    public void incrementIncreasedFile() {
-        quantityIncreasedFiles++;
-    }
-
     public void addFileSizeBeforeKb(Double size) {
         totalSizeBeforeModifier = totalSizeBeforeModifier.add(BigDecimal.valueOf(size));
     }
 
     public void addFileSizeAfterKb(Double size) {
         totalSizeAfterModifier = totalSizeAfterModifier.add(BigDecimal.valueOf(size));
+    }
+
+    public static Counter getTotalCounter(Map<String, Counter> counters) {
+        Counter total = new Counter("total", 0L, 0L, 0L, BigDecimal.ZERO, BigDecimal.ZERO);
+        for (Counter during : counters.values()) {
+            total.setTotalSizeBeforeModifier(total.getTotalSizeBeforeModifier().add(during.getTotalSizeBeforeModifier()));
+            total.setTotalSizeAfterModifier(total.getTotalSizeAfterModifier().add(during.getTotalSizeAfterModifier()));
+            total.setTotalFiles(total.getTotalFiles() + during.getTotalFiles());
+            total.setQuantityOfProcessedFiles(total.getQuantityOfProcessedFiles() + during.getQuantityOfProcessedFiles());
+            total.setQuantityOfUnmodifiedFiles(total.getQuantityOfUnmodifiedFiles() + during.getQuantityOfUnmodifiedFiles());
+        }
+        return total;
     }
 
     public String getName() {
@@ -76,14 +82,6 @@ public class Counter {
 
     public void setQuantityOfUnmodifiedFiles(Long quantityOfUnmodifiedFiles) {
         this.quantityOfUnmodifiedFiles = quantityOfUnmodifiedFiles;
-    }
-
-    public Long getQuantityIncreasedFiles() {
-        return quantityIncreasedFiles;
-    }
-
-    public void setQuantityIncreasedFiles(Long quantityIncreasedFiles) {
-        this.quantityIncreasedFiles = quantityIncreasedFiles;
     }
 
     public BigDecimal getTotalSizeBeforeModifier() {

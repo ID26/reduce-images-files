@@ -1,9 +1,6 @@
-package ru.akadem.infoteck.utils;
+package ru.akadem.infotech.utils;
 
 import java.io.File;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 public class GetFileSize {
 

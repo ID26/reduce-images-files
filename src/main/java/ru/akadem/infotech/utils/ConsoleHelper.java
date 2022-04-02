@@ -1,11 +1,7 @@
-package ru.akadem.infoteck;
+package ru.akadem.infotech.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ResourceBundle;
 
 public class ConsoleHelper {
 //    private static BufferedReader bis = new BufferedReader(new InputStreamReader(System.in));

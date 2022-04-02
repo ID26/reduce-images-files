@@ -1,9 +1,9 @@
-package ru.akadem.infoteck;
+package ru.akadem.infotech;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.parser.PdfImageObject;
-import ru.akadem.infoteck.utils.GetFileSize;
+import ru.akadem.infotech.utils.Counter;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -32,8 +32,8 @@ public class PdfReduce extends Reducer {
     }
 
     @Override
-    public boolean manipulate(String src, String dest) throws DocumentException, IOException {
-        PdfReader reader = new PdfReader(src);
+    public boolean manipulate(File src, File dest) throws DocumentException, IOException {
+        PdfReader reader = new PdfReader(src.toString());
         int n = reader.getXrefSize();
         PdfObject object;
         PRStream stream;

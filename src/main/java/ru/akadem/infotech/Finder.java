@@ -1,4 +1,7 @@
-package ru.akadem.infoteck;
+package ru.akadem.infotech;
+
+import ru.akadem.infotech.utils.ConsoleHelper;
+import ru.akadem.infotech.utils.Counter;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -22,14 +25,18 @@ public class Finder extends SimpleFileVisitor<Path> {
     }
 
     private static void countersMapInit() {
-        reducerMap.forEach((key, value) -> counters.put(key, new Counter(key, 0L, 0L, 0L, 0L, BigDecimal.ZERO,
+        reducerMap.forEach((key, value) -> counters.put(key, new Counter(key, 0L, 0L, 0L, BigDecimal.ZERO,
                 BigDecimal.ZERO)));
     }
 
     private static void reducerMapInit() {
         reducerMap.put(".pdf", new PdfReduce(1264, 1753));
-        reducerMap.put(".png", new PngReducer());
-//        ".png", ".gif", ".jpeg", ".jpg", ".tiff"
+        reducerMap.put(".png", new ImageReduce(800, 1500));
+        reducerMap.put(".jpg", new ImageReduce(800, 1500));
+        reducerMap.put(".jpeg", new ImageReduce(800, 1500));
+        reducerMap.put(".tiff", new ImageReduce(800, 1500));
+        reducerMap.put(".gif", new ImageReduce(800, 1500));
+        reducerMap.put(".bmp", new ImageReduce(800, 1500));
     }
 
     // Compares the glob pattern against
@@ -37,7 +44,7 @@ public class Finder extends SimpleFileVisitor<Path> {
     void find(Path file) {
         Path name = file.getFileName();
         for (Map.Entry<String, Reducer> entry : reducerMap.entrySet()) {
-            if (name != null && name.toString().endsWith(entry.getKey())) {
+            if (name != null && name.toString().toLowerCase().endsWith(entry.getKey())) {
                 Reducer reducer = entry.getValue();
                 reducer.reduce(file, counters, entry.getKey(), reducer);
             }
@@ -47,18 +54,28 @@ public class Finder extends SimpleFileVisitor<Path> {
     // Prints the total number of
     // matches to standard out.
     public void done() {
-        for (Map.Entry<String, Counter> counter : counters.entrySet()) {
+        ConsoleHelper.writeMessage("\n");
+        for (Counter counter : counters.values()) {
             ConsoleHelper.writeMessage(String.format("Всего обработано %d файлов формата %s, из которых сжато - %d, " +
-                            "увеличено - %d, пропущено - %d. Общий размер файлов до обработки -" + " %s KB, после обработки - %s KB",
-                    counter.getValue().getTotalFiles(),
-                    counter.getValue().getName(),
-                    counter.getValue().getQuantityOfProcessedFiles(),
-                    counter.getValue().getQuantityIncreasedFiles(),
-                    counter.getValue().getQuantityOfUnmodifiedFiles(),
-                    counter.getValue().getTotalSizeBeforeModifier(),
-                    counter.getValue().getTotalSizeAfterModifier()
+                            " пропущено - %d. Общий размер файлов до обработки -" + " %s KB, после обработки - %s KB",
+                    counter.getTotalFiles(),
+                    counter.getName(),
+                    counter.getQuantityOfProcessedFiles(),
+                    counter.getQuantityOfUnmodifiedFiles(),
+                    counter.getTotalSizeBeforeModifier(),
+                    counter.getTotalSizeAfterModifier()
                    ));
         }
+        ConsoleHelper.writeMessage("\n");
+        Counter totalCounter = Counter.getTotalCounter(counters);
+        ConsoleHelper.writeMessage(String.format("Всего обработано %d файлов, из которых сжато - %d, пропущено - %d. " +
+                        "Общий размер файлов до обработки - %s KB, после обработки - %s KB",
+                totalCounter.getTotalFiles(),
+                totalCounter.getQuantityOfProcessedFiles(),
+                totalCounter.getQuantityOfUnmodifiedFiles(),
+                totalCounter.getTotalSizeBeforeModifier(),
+                totalCounter.getTotalSizeAfterModifier()
+        ));
     }
 
     // Invoke the pattern matching
