@@ -1,4 +1,4 @@
-package ru.akadem.infoteck;
+package ru.akadem.infotech;
 
 import java.io.IOException;
 import java.nio.file.Files;

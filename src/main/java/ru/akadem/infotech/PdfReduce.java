@@ -1,9 +1,9 @@
-package ru.akadem.infoteck;
+package ru.akadem.infotech;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.parser.PdfImageObject;
-import ru.akadem.infoteck.utils.GetFileSize;
+import ru.akadem.infotech.utils.Counter;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,52 +16,22 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
-public class PdfReduce implements Reducer {
-    public static final float FACTOR = 0.50f;
-    public static final int WIDTH = 1264; //поменять
-    public static final int HEIGHT = 1753; //поменять
-//    время к логу
-//    ошибки
+public class PdfReduce extends Reducer {
+
+    private final int width;
+
+    public PdfReduce(int width) {
+        this.width = width;
+    }
 
     @Override
-    public void reduce(Path path, Map<String, Counter> counters, String key) {
-        File fileSrc = new File(path.toString());
-        String destFile = String.format("%s/temp.pdf", fileSrc.getParentFile().toString());
-        File file = new File(destFile);
-        file.getParentFile().mkdirs();
-        try {
-            manipulatePdf(path.toString(), file.toString());
-
-
-            Double srcSizeKiloBytes = GetFileSize.getFileSizeKiloBytes(fileSrc);
-            Double destSizeKiloBytes = GetFileSize.getFileSizeKiloBytes(file);
-
-            insertingChangesToCounters(counters.get(key), srcSizeKiloBytes, destSizeKiloBytes);
-
-        System.out.printf("Файл %s был ужат с %f KB до %f KB\n", fileSrc.getName(), srcSizeKiloBytes,
-                destSizeKiloBytes);
-
-            file.renameTo(fileSrc);
-        } catch (Exception e) {
-            e.printStackTrace(); // писать ошибку в лог
-        }
+    public void reduce(Path path, Map<String, Counter> counters, String key, Reducer reducer) {
+        super.reduce(path, counters, key, reducer);
     }
 
-    private void insertingChangesToCounters(Counter counter, Double srcSizeKiloBytes, Double destSizeKiloBytes) {
-        counter.incrementTotalFiles();
-        counter.addFileSizeBeforeKb(srcSizeKiloBytes);
-        counter.addFileSizeAfterKb(destSizeKiloBytes);
-        if (srcSizeKiloBytes >= destSizeKiloBytes) {
-            counter.incrementOfProcessedFiles();
-        } else if (srcSizeKiloBytes <= destSizeKiloBytes) {
-            counter.incrementIncreasedFile();
-        } else {
-            counter.incrementOfUnmodifiedFiles();
-        }
-    }
-
-    public void manipulatePdf(String src, String dest) throws DocumentException, IOException {
-        PdfReader reader = new PdfReader(src);
+    @Override
+    public boolean manipulate(File src, File dest) throws DocumentException, IOException {
+        PdfReader reader = new PdfReader(src.toString());
         int n = reader.getXrefSize();
         PdfObject object;
         PRStream stream;
@@ -79,11 +49,11 @@ public class PdfReduce implements Reducer {
             BufferedImage bi = image.getBufferedImage();
             if (bi == null)
                 continue;
-//            изменить коэфицент
-            if (bi.getWidth() <= 1264) {
-                continue;
+
+            if (bi.getWidth() <= width /*&& bi.getHeight() <= HEIGHT*/) {
+                return false;
             }
-            Double factor =  1264 / (double) bi.getWidth();
+            double factor =  width / (double) bi.getWidth();
             int width = (int)(bi.getWidth() * factor);
             int height = (int)(bi.getHeight() * factor);
             if (bi.getWidth() <= 0 || bi.getHeight() <= 0)
@@ -111,6 +81,10 @@ public class PdfReduce implements Reducer {
         stamper.setFullCompression();
         stamper.close();
         reader.close();
+        return true;
+    }
 
+    public int getWidth() {
+        return width;
     }
 }
