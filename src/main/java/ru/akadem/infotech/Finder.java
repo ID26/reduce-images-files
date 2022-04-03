@@ -30,13 +30,14 @@ public class Finder extends SimpleFileVisitor<Path> {
     }
 
     private static void reducerMapInit() {
-        reducerMap.put(".pdf", new PdfReduce(1264, 1753));
-        reducerMap.put(".png", new ImageReduce(800, 1500));
-        reducerMap.put(".jpg", new ImageReduce(800, 1500));
-        reducerMap.put(".jpeg", new ImageReduce(800, 1500));
-        reducerMap.put(".tiff", new ImageReduce(800, 1500));
-        reducerMap.put(".gif", new ImageReduce(800, 1500));
-        reducerMap.put(".bmp", new ImageReduce(800, 1500));
+        reducerMap.put(".pdf", new PdfReduce(1264));
+        reducerMap.put(".png", new ImageReduce(800));
+        reducerMap.put(".jpg", new ImageReduce(800));
+        reducerMap.put(".jpeg", new ImageReduce(800));
+        reducerMap.put(".tiff", new ImageReduce(800));
+        reducerMap.put(".tif", new ImageReduce(800));
+        reducerMap.put(".gif", new ImageReduce(800));
+        reducerMap.put(".bmp", new ImageReduce(800));
     }
 
     // Compares the glob pattern against

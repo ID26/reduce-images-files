@@ -19,11 +19,9 @@ import java.util.Map;
 public class PdfReduce extends Reducer {
 
     private final int width;
-    private final int height;
 
-    public PdfReduce(int width, int height) {
+    public PdfReduce(int width) {
         this.width = width;
-        this.height = height;
     }
 
     @Override
@@ -88,9 +86,5 @@ public class PdfReduce extends Reducer {
 
     public int getWidth() {
         return width;
-    }
-
-    public int getHeight() {
-        return height;
     }
 }

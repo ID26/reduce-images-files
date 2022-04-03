@@ -26,9 +26,8 @@ public abstract class Reducer {
             boolean isChangeLow10Perc =  ((srcSizeKiloBytes - destSizeKiloBytes) / srcSizeKiloBytes) * 100 < 10;
 
             if (!isChange || isChangeLow10Perc) {
-                ConsoleHelper.writeMessage(String.format("Файл %s уже имеет минимальный размер по ширине %d и высоте " +
-                        "%d, объем занимаемой памяти %f", fileSrc.getAbsolutePath(), reducer.getWidth(), reducer.getHeight(),
-                        srcSizeKiloBytes));
+                ConsoleHelper.writeMessage(String.format("Файл %s уже имеет минимальный размер по ширине %d, объем занимаемой памяти %f"
+                        , fileSrc.getAbsolutePath(), reducer.getWidth(), srcSizeKiloBytes));
                 if (Files.exists(fileDest.toPath())) {
                     Files.delete(fileDest.toPath());
                 }
@@ -70,6 +69,4 @@ public abstract class Reducer {
     public abstract boolean manipulate(File src, File dest) throws DocumentException, IOException;
 
     public abstract int getWidth();
-
-    public abstract int getHeight();
 }
