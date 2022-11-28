@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 public class AppMain {
     public static void main(String[] args) throws IOException {
+
         if (args.length < 1) {
             usage();
         }
@@ -15,7 +16,7 @@ public class AppMain {
 
         Finder finder = new Finder();
         Files.walkFileTree(startingDir, finder);
-        finder.done();
+        Finder.printStatistic();
     }
 
     static void usage() {

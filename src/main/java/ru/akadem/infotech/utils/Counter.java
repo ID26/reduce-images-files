@@ -6,22 +6,34 @@ import java.util.Map;
 public class Counter {
     private String name;
     private Long totalFiles;
+    private Long totalErrors;
     private Long quantityOfProcessedFiles;
     private Long quantityOfUnmodifiedFiles;
     private BigDecimal totalSizeBeforeModifier;
     private BigDecimal totalSizeAfterModifier;
 
-    public Counter(String name, Long totalFiles, Long quantityOfProcessedFiles, Long quantityOfUnmodifiedFiles, BigDecimal totalSizeBeforeModifier, BigDecimal totalSizeAfterModifier) {
+    public Counter(String name,
+                   Long totalFiles,
+                   Long totalErrors,
+                   Long quantityOfProcessedFiles,
+                   Long quantityOfUnmodifiedFiles,
+                   BigDecimal totalSizeBeforeModifier,
+                   BigDecimal totalSizeAfterModifier) {
         this.name = name;
         this.totalFiles = totalFiles;
         this.quantityOfProcessedFiles = quantityOfProcessedFiles;
         this.quantityOfUnmodifiedFiles = quantityOfUnmodifiedFiles;
         this.totalSizeBeforeModifier = totalSizeBeforeModifier;
         this.totalSizeAfterModifier = totalSizeAfterModifier;
+        this.totalErrors = totalErrors;
     }
 
     public void incrementTotalFiles() {
         totalFiles++;
+    }
+
+    public void incrementTotalErrors() {
+        totalErrors++;
     }
 
     public void incrementOfProcessedFiles() {
@@ -41,11 +53,18 @@ public class Counter {
     }
 
     public static Counter getTotalCounter(Map<String, Counter> counters) {
-        Counter total = new Counter("total", 0L, 0L, 0L, BigDecimal.ZERO, BigDecimal.ZERO);
+        Counter total = new Counter("total",
+                0L,
+                0L,
+                0L,
+                0L,
+                BigDecimal.ZERO,
+                BigDecimal.ZERO);
         for (Counter during : counters.values()) {
             total.setTotalSizeBeforeModifier(total.getTotalSizeBeforeModifier().add(during.getTotalSizeBeforeModifier()));
             total.setTotalSizeAfterModifier(total.getTotalSizeAfterModifier().add(during.getTotalSizeAfterModifier()));
             total.setTotalFiles(total.getTotalFiles() + during.getTotalFiles());
+            total.setTotalErrors(total.getTotalErrors() + during.getTotalErrors());
             total.setQuantityOfProcessedFiles(total.getQuantityOfProcessedFiles() + during.getQuantityOfProcessedFiles());
             total.setQuantityOfUnmodifiedFiles(total.getQuantityOfUnmodifiedFiles() + during.getQuantityOfUnmodifiedFiles());
         }
@@ -64,8 +83,16 @@ public class Counter {
         return totalFiles;
     }
 
+    public Long getTotalErrors() {
+        return totalErrors;
+    }
+
     public void setTotalFiles(Long totalFiles) {
         this.totalFiles = totalFiles;
+    }
+
+    public void setTotalErrors(Long totalErrors) {
+        this.totalErrors = totalErrors;
     }
 
     public Long getQuantityOfProcessedFiles() {
@@ -102,6 +129,9 @@ public class Counter {
 
     @Override
     public String toString() {
-        return "Counter{" + "name='" + name + '\'' + ", totalFiles=" + totalFiles + ", quantityOfProcessedFiles=" + quantityOfProcessedFiles + ", quantityOfUnmodifiedFiles=" + quantityOfUnmodifiedFiles + '}';
+        return "Counter{" + "name='" + name + '\'' + ", totalFiles=" + totalFiles
+                + ", totalErrors=" + totalErrors
+                + ", quantityOfProcessedFiles=" + quantityOfProcessedFiles
+                + ", quantityOfUnmodifiedFiles=" + quantityOfUnmodifiedFiles + '}';
     }
 }

@@ -17,21 +17,27 @@ public class ImageReduce extends Reducer {
     public boolean manipulate(File src, File dest) throws IOException {
         BufferedImage bufferedImageInput = ImageIO.read(src);
 
-        int widthInput = bufferedImageInput.getWidth();
-        int heightInput = bufferedImageInput.getHeight();
+        int requiredSizeX = bufferedImageInput.getWidth();
+        int requiredSizeY = bufferedImageInput.getHeight();
 
-        if (widthInput <= width) return false;
-        double factor = (double) width / widthInput;
-        int widthOutput = (int)(widthInput * factor);
-        int heightOutput = (int)(heightInput * factor);
+        int smallerSide = Math.min(requiredSizeX, requiredSizeY);
+
+        if (smallerSide <= width) return false;
+        double factor = (double) width / smallerSide;
+        int widthOutput = (int)(requiredSizeX * factor);
+        int heightOutput = (int)(requiredSizeY * factor);
         BufferedImage bufferedImageOutput = new BufferedImage(widthOutput,
                 heightOutput, Image.SCALE_DEFAULT);
 
         Graphics2D g2d = bufferedImageOutput.createGraphics();
-        g2d.drawImage(bufferedImageInput, 0, 0, widthOutput, heightOutput, null);
-        g2d.dispose();
+        try {
+            g2d.drawImage(bufferedImageInput, 0, 0, widthOutput, heightOutput, null);
+        } finally {
+            g2d.dispose();
+        }
 
         String formatName = dest.toString().substring(dest.toString().lastIndexOf(".") + 1);
+
 
         return ImageIO.write(bufferedImageOutput, formatName, dest);
     }
